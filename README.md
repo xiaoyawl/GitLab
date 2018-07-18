@@ -1,3 +1,5 @@
+**基于[sameersbn/gitlab:10.8.3](https://github.com/sameersbn/docker-gitlab/tree/10.8.3-1)和[GitLab 中文社区版10.8.3zh](https://gitlab.com/xhang/gitlab/tree/v10.8.3-zh)而成**
+
 [![Docker Repository on Quay.io](https://quay.io/repository/sameersbn/gitlab/status "Docker Repository on Quay.io")](https://quay.io/repository/sameersbn/gitlab)
 [![](https://images.microbadger.com/badges/image/sameersbn/gitlab.svg)](http://microbadger.com/images/sameersbn/gitlab "Get your own image badge on microbadger.com")
 
