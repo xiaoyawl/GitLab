@@ -11,14 +11,16 @@
 
 # benyoo/gitlab:11.5.3_zh 中文版
 - 编译方法
-    - ```docker build \
+    ```bash
+    docker build \
     --build-arg BUILD_LANGUAGE_CN=true \
     --build-arg GITLAB_VERSION=v11.5.3-zh \
     -t benyoo/gitlab:11.5.3-zh \
     -t benyoo/gitlab:latest \
-    https://github.com/xiaoyawl/GitLab.git```
+    https://github.com/xiaoyawl/GitLab.git
+    ```
 - 使用方法
-  ```bash
+```bash
 version: '2'
 services:
   redis:
