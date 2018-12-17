@@ -3,6 +3,104 @@
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](
 https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
+**11.5.3**
+- gitlab: upgrade CE to v11.5.3
+
+**11.5.2**
+- gitlab: upgrade CE to v11.5.2
+
+**11.5.1-1**
+- Fixed GitLab Dependencies
+
+**11.5.1**
+- gitlab: upgrade CE to v11.5.1
+
+**11.5.0**
+- gitlab: upgrade CE to v11.5.0
+
+**11.4.7**
+- gitlab: upgrade CE to v11.4.7
+
+**11.4.6**
+- gitlab: upgrade CE to v11.4.6
+
+**11.4.5**
+- gitlab: upgrade CE to v11.4.5
+
+**11.4.4**
+- gitlab: upgrade CE to v11.4.4
+- golang: update to 1.10.4
+
+**11.4.3**
+- gitlab: upgrade CE to v11.4.3
+
+**11.4.2**
+- gitlab: upgrade CE to v11.4.2
+
+**11.4.1**
+- gitlab: upgrade CE to v11.4.1
+- Add docs how to reuse ssh port [#1731](https://github.com/sameersbn/docker-gitlab/pull/1731)
+
+**11.4.0**
+- gitlab: upgrade CE to v11.4.0
+- baseimage: upgrade to xenial-20181005
+
+**11.3.6**
+- gitlab: upgrade CE to v11.3.6
+
+**11.3.5**
+- gitlab: upgrade CE to v11.3.5
+
+**11.3.4**
+- gitlab: upgrade CE to v11.3.4
+
+**11.3.3**
+- gitlab: upgrade CE to v11.3.3
+
+**11.3.2**
+- gitlab: upgrade CE to v11.3.2
+
+**11.3.1**
+- gitlab: upgrade CE to v11.3.1
+
+**11.3.0**
+- gitlab: upgrade CE to v11.3.0
+- Fix backup config stripping for when AWS & GCS backups are disabled [#1725](https://github.com/sameersbn/docker-gitlab/pull/1725)
+- Correct Backup Date format for selective backups [#1699](https://github.com/sameersbn/docker-gitlab/pull/1699)
+- Fix gitlay-ssh symlink to enable rebase/squash in forks 
+
+**11.2.3**
+- gitlab: upgrade CE to v11.2.3
+
+**11.2.2**
+- gitlab: upgrade CE to v11.2.2
+
+**11.2.1**
+- gitlab: upgrade CE to v11.2.1
+
+**11.2.0**
+- gitlab: upgrade CE to v11.2.0
+- ADD `GITLAB_DEFAULT_THEME`
+
+**11.1.4**
+- gitlab: upgrade CE to v11.1.4
+
+**11.1.3**
+- gitlab: upgrade CE to v11.1.3
+- Upgrade redis to 4.0.9-1
+
+**11.1.2**
+- gitlab: upgrade CE to v11.1.2
+
+**11.1.1**
+- gitlab: upgrade CE to v11.1.1
+
+**11.1.0**
+- gitlab: upgrade CE to v11.1.0
+
+**11.0.4**
+- gitlab: upgrade CE to v11.0.4
+
 **11.0.3**
 - gitlab: upgrade CE to v11.0.3
 - ruby: update to 2.4

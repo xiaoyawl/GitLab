@@ -26,6 +26,8 @@ production: &base
   # 1. GitLab app settings
   # ==========================
 
+
+
   ## GitLab settings
   gitlab:
     ## Web server settings (note: host is the FQDN, do not include http://)
@@ -75,13 +77,18 @@ production: &base
     default_can_create_group: {{GITLAB_CREATE_GROUP}}  # default: true
     username_changing_enabled: {{GITLAB_USERNAME_CHANGE}} # default: true - User can change her username/namespace
     ## Default theme ID
-    ##   1 - Graphite
-    ##   2 - Charcoal
-    ##   3 - Green
-    ##   4 - Gray
-    ##   5 - Violet
-    ##   6 - Blue
-    # default_theme: 2 # default: 2
+    ##   1 - Indigo
+    ##   2 - Dark
+    ##   3 - Light
+    ##   4 - Blue
+    ##   5 - Green
+    ##   6 - Light Indigo
+    ##   7 - Light Blue
+    ##   8 - Light Green
+    ##   9 - Red
+    ##   10 - Light Red
+    default_theme: {{GITLAB_DEFAULT_THEME}}
+
 
     # Enable or disable user signups (first run only)
     signup_enabled: {{GITLAB_SIGNUP_ENABLED}}
@@ -151,6 +158,7 @@ production: &base
     object_store:
       enabled: {{GITLAB_ARTIFACTS_OBJECT_STORE_ENABLED}}
       remote_directory: {{GITLAB_ARTIFACTS_OBJECT_STORE_REMOTE_DIRECTORY}} # The bucket name
+      direct_upload: {{GITLAB_ARTIFACTS_OBJECT_STORE_DIRECT_UPLOAD}} # Set to true to enable direct upload of Artifacts without the need of local shared storage. 
       background_upload: {{GITLAB_ARTIFACTS_OBJECT_STORE_BACKGROUND_UPLOAD}} # Temporary option to limit automatic upload (Default: true)
       proxy_download: {{GITLAB_ARTIFACTS_OBJECT_STORE_PROXY_DOWNLOAD}} # Passthrough all downloads via GitLab instead of using Redirects to Object Storage
       connection:
@@ -218,9 +226,9 @@ production: &base
     port: {{GITLAB_PAGES_PORT}} # Set to 443 if you serve the pages with HTTPS
     https: {{GITLAB_PAGES_HTTPS}} # Set to true if you serve the pages with HTTPS
     artifacts_server: {{GITLAB_PAGES_ARTIFACTS_SERVER}}
+    access_control: {{GITLAB_PAGES_ACCESS_CONTROL}} # If true, allows access to a Pages site to be controlled based on a user’s membership to that project
     external_http: {{GITLAB_PAGES_EXTERNAL_HTTP}} # If defined, enables custom domain support in GitLab Pages
     external_https: {{GITLAB_PAGES_EXTERNAL_HTTPS}} # If defined, enables custom domain and certificate support in GitLab Pages
-
 
   ## Mattermost
   ## For enabling Add to Mattermost button
