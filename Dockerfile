@@ -1,7 +1,7 @@
 FROM ubuntu:xenial-20181113
 MAINTAINER from www.dwhd.org by lookback (mondeolove@gmail.com)
 
-ARG BUILD_DATE
+ARG BUILD_DATE=${BUILD_DATE:-"$(date +'%Y-%m-%d %H-%M-%S')"}
 ARG VCS_REF
 ARG VERSION=11.5.3
 ARG BUILD_LANGUAGE_CN=${BUILD_LANGUAGE_CN:-true}
