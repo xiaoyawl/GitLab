@@ -64,13 +64,13 @@ COPY entrypoint.sh /sbin/entrypoint.sh
 RUN chmod 755 /sbin/entrypoint.sh
 
 LABEL \
-    maintainer="sameer@damagehead.com" \
+    maintainer="mondeolove@gmail.com" \
     org.label-schema.schema-version="1.0" \
     org.label-schema.build-date=${BUILD_DATE} \
     org.label-schema.name=gitlab \
     org.label-schema.vendor=damagehead \
-    org.label-schema.url="https://github.com/sameersbn/docker-gitlab" \
-    org.label-schema.vcs-url="https://github.com/sameersbn/docker-gitlab.git" \
+    org.label-schema.url="https://github.com/xiaoyawl/GitLab" \
+    org.label-schema.vcs-url="https://github.com/xiaoyawl/GitLab.git" \
     org.label-schema.vcs-ref=${VCS_REF} \
     com.damagehead.gitlab.license=MIT
 
