@@ -1,11 +1,12 @@
 #!/bin/bash
 set -e
 
-GITLAB_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-ce.git
+GITLAB_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-foss.git
 GITLAB_SHELL_URL=https://gitlab.com/gitlab-org/gitlab-shell/-/archive/v${GITLAB_SHELL_VERSION}/gitlab-shell-v${GITLAB_SHELL_VERSION}.tar.bz2
 GITLAB_WORKHORSE_URL=https://gitlab.com/gitlab-org/gitlab-workhorse.git
 GITLAB_PAGES_URL=https://gitlab.com/gitlab-org/gitlab-pages.git
 GITLAB_GITALY_URL=https://gitlab.com/gitlab-org/gitaly.git
+
 [[ "${BUILD_LANGUAGE_CN}" == "true" ]] && GITLAB_CLONE_URL=https://gitlab.com/xhang/gitlab.git
 
 GITLAB_WORKHORSE_BUILD_DIR=/tmp/gitlab-workhorse
@@ -21,7 +22,7 @@ export GOROOT PATH
 
 BUILD_DEPENDENCIES="gcc g++ make patch pkg-config cmake paxctl \
   libc6-dev ruby${RUBY_VERSION}-dev \
-  libmysqlclient-dev libpq-dev zlib1g-dev libyaml-dev libssl-dev \
+  libpq-dev zlib1g-dev libyaml-dev libssl-dev \
   libgdbm-dev libreadline-dev libncurses5-dev libffi-dev \
   libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev \
   gettext libkrb5-dev"
@@ -43,9 +44,9 @@ DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y ${BUIL
 # Applying the mark late here does make the build usable on PaX kernels, but
 # still the build itself must be executed on a non-PaX kernel. It's done here
 # only for simplicity.
-paxctl -Cm "$(command -v ruby${RUBY_VERSION})"
+paxctl -cvm "$(command -v ruby${RUBY_VERSION})"
 # https://en.wikibooks.org/wiki/Grsecurity/Application-specific_Settings#Node.js
-paxctl -Cm "$(command -v nodejs)"
+paxctl -cvm "$(command -v nodejs)"
 
 # remove the host keys generated during openssh-server installation
 rm -rf /etc/ssh/ssh_host_*_key /etc/ssh/ssh_host_*_key.pub
@@ -63,8 +64,13 @@ EOF
 exec_as_git git config --global core.autocrlf input
 exec_as_git git config --global gc.auto 0
 exec_as_git git config --global repack.writeBitmaps true
+exec_as_git git config --global receive.advertisePushOptions true
 
-# shallow clone gitlab-ce
+
+# shallow clone gitlab-foss
+#echo "Cloning gitlab-foss v.${GITLAB_VERSION}..."
+#exec_as_git git clone -q -b v${GITLAB_VERSION} --depth 1 ${GITLAB_CLONE_URL} ${GITLAB_INSTALL_DIR}
+
 if [[ "${BUILD_LANGUAGE_CN}" == "true" ]]; then
   echo "${CMSG}Cloning gitlab-ce ${GITLAB_VERSION}...${CEND}"
   exec_as_git git clone -q -b ${GITLAB_VERSION} --depth 1 ${GITLAB_CLONE_URL} ${GITLAB_INSTALL_DIR}
@@ -74,9 +80,6 @@ else
   #exec_as_git git clone -q -b 9-2-stable-zh --depth 1 ${GITLAB_CLONE_URL} ${GITLAB_INSTALL_DIR}
 fi
 
-## shallow clone gitlab-ce
-#echo "Cloning gitlab-ce v.${GITLAB_VERSION}..."
-#exec_as_git git clone -q -b v${GITLAB_VERSION} --depth 1 ${GITLAB_CLONE_URL} ${GITLAB_INSTALL_DIR}
 
 GITLAB_SHELL_VERSION=${GITLAB_SHELL_VERSION:-$(cat ${GITLAB_INSTALL_DIR}/GITLAB_SHELL_VERSION)}
 GITLAB_WORKHORSE_VERSION=${GITLAB_WORKHOUSE_VERSION:-$(cat ${GITLAB_INSTALL_DIR}/GITLAB_WORKHORSE_VERSION)}
@@ -162,7 +165,7 @@ if [[ -d ${GEM_CACHE_DIR} ]]; then
   chown -R ${GITLAB_USER}: ${GITLAB_INSTALL_DIR}/vendor/cache
 fi
 
-exec_as_git bundle install -j"$(nproc)" --deployment --without development test aws
+exec_as_git bundle install -j"$(nproc)" --deployment --without development test mysql aws
 
 # make sure everything in ${GITLAB_HOME} is owned by ${GITLAB_USER} user
 chown -R ${GITLAB_USER}: ${GITLAB_HOME}
@@ -170,14 +173,14 @@ chown -R ${GITLAB_USER}: ${GITLAB_HOME}
 # gitlab.yml and database.yml are required for `assets:precompile`
 exec_as_git cp ${GITLAB_INSTALL_DIR}/config/resque.yml.example ${GITLAB_INSTALL_DIR}/config/resque.yml
 exec_as_git cp ${GITLAB_INSTALL_DIR}/config/gitlab.yml.example ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-exec_as_git cp ${GITLAB_INSTALL_DIR}/config/database.yml.mysql ${GITLAB_INSTALL_DIR}/config/database.yml
+exec_as_git cp ${GITLAB_INSTALL_DIR}/config/database.yml.postgresql ${GITLAB_INSTALL_DIR}/config/database.yml
 
 # Installs nodejs packages required to compile webpack
 exec_as_git yarn install --production --pure-lockfile
 exec_as_git yarn add ajv@^4.0.0
 
 echo "Compiling assets. Please be patient, this could take a while..."
-exec_as_git bundle exec rake gitlab:assets:compile USE_DB=false SKIP_STORAGE_VALIDATION=true
+exec_as_git bundle exec rake gitlab:assets:compile USE_DB=false SKIP_STORAGE_VALIDATION=true NODE_OPTIONS="--max-old-space-size=4096"
 
 # remove auto generated ${GITLAB_DATA_DIR}/config/secrets.yml
 rm -rf ${GITLAB_DATA_DIR}/config/secrets.yml
@@ -409,6 +412,19 @@ autostart=true
 autorestart=true
 stdout_logfile=${GITLAB_LOG_DIR}/supervisor/%(program_name)s.log
 stderr_logfile=${GITLAB_LOG_DIR}/supervisor/%(program_name)s.log
+EOF
+
+
+cat > /etc/supervisor/conf.d/groups.conf <<EOF
+[group:core]
+programs=gitaly
+priority=5
+[group:gitlab]
+programs=unicorn,gitlab-workhorse
+priority=10
+[group:gitlab_extensions]
+programs=sshd,nginx,mail_room,cron
+priority=20
 EOF
 
 # purge build dependencies and cleanup apt
