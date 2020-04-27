@@ -1,5 +1,7 @@
-FROM ubuntu:bionic-20190807
+FROM ubuntu:bionic-20200219
+MAINTAINER from www.dwhd.org by lookback (mondeolove@gmail.com)
 
+ARG BUILD_DATE=${BUILD_DATE:-"$(date +'%Y-%m-%d %H-%M-%S')"}
 ARG BUILD_DATE
 ARG VCS_REF
 ARG VERSION=12.3.5
